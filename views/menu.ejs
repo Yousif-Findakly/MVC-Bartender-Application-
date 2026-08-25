@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+<!--
+  VIEW - Cocktail menu (step 5 of the request flow).
+  Rendered by MenuController.index with the rows CocktailModel read from the
+  database. No SQL and no business rules in this file.
+-->
+
+<div class="page-head">
+  <div>
+    <h1>Cocktail Menu</h1>
+    <p class="sub">Tap any cocktail to send it to the bar.</p>
+  </div>
+  <a class="btn btn-primary" href="/order/new">Place an Order</a>
+</div>
+
+<% if (cocktails.length === 0) { %>
+  <p class="empty">The bar has not published a menu yet.</p>
+<% } else { %>
+  <div class="menu-grid">
+    <% cocktails.forEach(function (cocktail) { %>
+      <article class="menu-card">
+        <div class="menu-card-top">
+          <h2><%= cocktail.name %></h2>
+          <span class="price"><%= formatPrice(cocktail.price) %></span>
+        </div>
+        <p class="desc"><%= cocktail.description %></p>
+        <dl class="specs">
+          <div><dt>Ingredients</dt><dd><%= cocktail.ingredients %></dd></div>
+          <div><dt>Glass</dt><dd><%= cocktail.glass %></dd></div>
+        </dl>
+        <a class="btn btn-outline" href="/order/new?cocktail_id=<%= cocktail.cocktail_id %>">
+          Order this
+        </a>
+      </article>
+    <% }); %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

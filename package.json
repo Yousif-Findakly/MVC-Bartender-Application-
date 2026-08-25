@@ -1,0 +1,27 @@
+{
+  "name": "mvc-bartender-application",
+  "version": "1.0.0",
+  "description": "MVC Bartender Application - CIS4327",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "reset-db": "node config/resetDatabase.js"
+  },
+  "keywords": [
+    "express",
+    "mvc",
+    "bartender",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}

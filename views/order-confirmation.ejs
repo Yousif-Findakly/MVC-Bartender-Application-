@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<!--
+  VIEW - Order confirmation.
+  Rendered by OrderController.view after the order was stored by OrderModel.
+-->
+
+<div class="confirm">
+  <div class="confirm-badge">&#10003;</div>
+  <h1>Order #<%= order.order_id %> is in the queue</h1>
+  <p class="sub">The bartender sees it now. We&rsquo;ll call for <strong><%= order.patron_name %></strong> at <strong><%= order.table_number %></strong>.</p>
+</div>
+
+<div class="card ticket">
+  <div class="ticket-row ticket-main">
+    <span class="qty"><%= order.quantity %>&times;</span>
+    <span class="cocktail"><%= order.cocktail_name %></span>
+    <span class="price"><%= formatPrice(order.price * order.quantity) %></span>
+  </div>
+
+  <dl class="ticket-details">
+    <div><dt>Status</dt>
+      <dd>
+        <span class="status <%= order.status === STATUS.READY ? 'status-ready' : 'status-queued' %>">
+          <%= order.status %>
+        </span>
+      </dd>
+    </div>
+    <div><dt>Glass</dt><dd><%= order.glass %></dd></div>
+    <div><dt>Placed at</dt><dd><%= order.placed_at %></dd></div>
+    <% if (order.ready_at) { %>
+      <div><dt>Ready at</dt><dd><%= order.ready_at %></dd></div>
+    <% } %>
+    <% if (order.special_instructions) { %>
+      <div class="wide"><dt>Special instructions</dt><dd><%= order.special_instructions %></dd></div>
+    <% } %>
+  </dl>
+</div>
+
+<div class="confirm-actions">
+  <a class="btn btn-outline" href="/menu">Order something else</a>
+  <a class="btn btn-ghost" href="/order/<%= order.order_id %>">Refresh status</a>
+</div>
+
+<%- include('partials/footer') %>

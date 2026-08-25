@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> &middot; MVC Bartender App</title>
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">&#127864;</span>
+        <span class="brand-text">
+          <strong>The Osprey Lounge</strong>
+          <small>MVC Bartender Application</small>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="/" class="<%= activeNav === 'home' ? 'active' : '' %>">Home</a>
+        <a href="/menu" class="<%= activeNav === 'menu' ? 'active' : '' %>">Cocktail Menu</a>
+        <a href="/queue" class="<%= activeNav === 'queue' ? 'active' : '' %>">Order Queue</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
