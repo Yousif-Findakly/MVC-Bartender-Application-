@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+
+<!--
+  VIEW - Order form (step 6 of the request flow).
+  Rendered by OrderController.newOrder, and re-rendered by OrderController.create
+  when OrderModel.validate returns errors. Submits an HTTP POST to /order.
+-->
+
+<div class="page-head">
+  <div>
+    <h1>Place an Order</h1>
+    <p class="sub">Your drink goes straight into the bartender&rsquo;s queue.</p>
+  </div>
+  <a class="btn btn-ghost" href="/menu">&larr; Back to the menu</a>
+</div>
+
+<% if (errors.length > 0) { %>
+  <div class="alert alert-error">
+    <strong>Please fix the following:</strong>
+    <ul>
+      <% errors.forEach(function (error) { %>
+        <li><%= error %></li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<form class="card form" method="POST" action="/order">
+
+  <label class="field">
+    <span class="label">Cocktail</span>
+    <select name="cocktail_id" required>
+      <option value="">&mdash; Choose a cocktail &mdash;</option>
+      <% cocktails.forEach(function (cocktail) { %>
+        <option value="<%= cocktail.cocktail_id %>"
+          <%= String(form.cocktail_id) === String(cocktail.cocktail_id) ? 'selected' : '' %>>
+          <%= cocktail.name %> &mdash; <%= formatPrice(cocktail.price) %>
+        </option>
+      <% }); %>
+    </select>
+  </label>
+
+  <div class="field-row">
+    <label class="field">
+      <span class="label">Name for the order</span>
+      <input type="text" name="patron_name" value="<%= form.patron_name %>"
+             placeholder="e.g. Yousif" maxlength="60" required>
+    </label>
+
+    <label class="field">
+      <span class="label">Table / seat</span>
+      <input type="text" name="table_number" value="<%= form.table_number %>"
+             placeholder="e.g. 12 or Bar 3" maxlength="20" required>
+    </label>
+
+    <label class="field field-narrow">
+      <span class="label">Quantity</span>
+      <input type="number" name="quantity" value="<%= form.quantity %>"
+             min="1" max="6" step="1" required>
+    </label>
+  </div>
+
+  <label class="field">
+    <span class="label">Special instructions <em>(optional)</em></span>
+    <textarea name="special_instructions" rows="3" maxlength="250"
+              placeholder="Extra lime, no salt on the rim, light ice..."><%= form.special_instructions %></textarea>
+  </label>
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">Send Order to the Bar</button>
+  </div>
+
+</form>
+
+<%- include('partials/footer') %>

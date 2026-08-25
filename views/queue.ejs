@@ -1,0 +1,73 @@
+<%- include('partials/header') %>
+
+<!--
+  VIEW - Bartender order queue (step 10 of the request flow).
+  Rendered by OrderController.viewQueue with the rows OrderModel read from the
+  database. The "Mark Ready for Pickup" button POSTs back to the controller.
+-->
+
+<div class="page-head">
+  <div>
+    <h1>Order Queue</h1>
+    <p class="sub">Oldest ticket first. Mark a drink ready once it is on the pass for the server.</p>
+  </div>
+  <div class="counters">
+    <span class="counter"><strong><%= summary.waiting %></strong> waiting</span>
+    <span class="counter counter-ready"><strong><%= summary.ready %></strong> ready</span>
+  </div>
+</div>
+
+<% if (notice) { %>
+  <div class="alert alert-ok"><%= notice %></div>
+<% } %>
+
+<% if (orders.length === 0) { %>
+  <p class="empty">No cocktail orders yet. Orders placed from the menu show up here.</p>
+<% } else { %>
+  <table class="queue-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cocktail</th>
+        <th>Patron</th>
+        <th>Table</th>
+        <th>Placed</th>
+        <th>Status</th>
+        <th class="right">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% orders.forEach(function (order) { %>
+        <tr class="<%= order.status === STATUS.READY ? 'row-ready' : '' %>">
+          <td class="mono"><%= order.order_id %></td>
+          <td>
+            <strong><%= order.quantity %>&times; <%= order.cocktail_name %></strong>
+            <div class="muted"><%= order.ingredients %> &middot; <%= order.glass %></div>
+            <% if (order.special_instructions) { %>
+              <div class="note">&#9888; <%= order.special_instructions %></div>
+            <% } %>
+          </td>
+          <td><%= order.patron_name %></td>
+          <td class="mono"><%= order.table_number %></td>
+          <td class="mono muted"><%= order.placed_at %></td>
+          <td>
+            <span class="status <%= order.status === STATUS.READY ? 'status-ready' : 'status-queued' %>">
+              <%= order.status %>
+            </span>
+          </td>
+          <td class="right">
+            <% if (order.status === STATUS.QUEUED) { %>
+              <form method="POST" action="/queue/<%= order.order_id %>/ready">
+                <button class="btn btn-small btn-primary" type="submit">Mark Ready for Pickup</button>
+              </form>
+            <% } else { %>
+              <span class="muted mono">Ready <%= order.ready_at %></span>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('partials/footer') %>

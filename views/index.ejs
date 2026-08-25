@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<!--
+  VIEW - Index / homepage (step 1 of the request flow).
+  Rendered by HomeController.index. Its only job is to display data it was
+  handed; it never queries the database.
+-->
+
+<section class="hero">
+  <h1>Order from the bar without leaving your seat.</h1>
+  <p>Patrons browse the cocktail menu and send an order straight to the bar. Bartenders work the live order queue and set finished drinks out for pickup.</p>
+</section>
+
+<section class="choice-grid">
+
+  <a class="choice-card patron" href="/menu">
+    <span class="choice-tag">Patron</span>
+    <h2>View Cocktail Menu &amp; Order</h2>
+    <p>Browse what the bar is pouring tonight and place an order for your table.</p>
+    <span class="choice-go">Open the menu &rarr;</span>
+  </a>
+
+  <a class="choice-card staff" href="/queue">
+    <span class="choice-tag">Bartender</span>
+    <h2>Open the Order Queue</h2>
+    <p>See every cocktail order in the order it came in, then mark each one ready for pickup.</p>
+    <span class="choice-counts">
+      <span><strong><%= summary.waiting %></strong> waiting</span>
+      <span><strong><%= summary.ready %></strong> ready</span>
+    </span>
+    <span class="choice-go">Open the queue &rarr;</span>
+  </a>
+
+</section>
+
+<%- include('partials/footer') %>
