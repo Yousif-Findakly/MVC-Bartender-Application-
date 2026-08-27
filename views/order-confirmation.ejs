@@ -5,6 +5,10 @@
   Rendered by OrderController.view after the order was stored by OrderModel.
 -->
 
+<% if (notice) { %>
+  <div class="alert alert-ok"><%= notice %></div>
+<% } %>
+
 <div class="confirm">
   <div class="confirm-badge">&#10003;</div>
   <h1>Order #<%= order.order_id %> is in the queue</h1>
@@ -38,6 +42,9 @@
 </div>
 
 <div class="confirm-actions">
+  <% if (canEdit) { %>
+    <a class="btn btn-primary" href="/order/<%= order.order_id %>/edit">Edit this order</a>
+  <% } %>
   <a class="btn btn-outline" href="/menu">Order something else</a>
   <a class="btn btn-ghost" href="/order/<%= order.order_id %>">Refresh status</a>
 </div>
