@@ -31,6 +31,9 @@ router.get('/menu', MenuController.index);
 router.get('/order/new', OrderController.newOrder);
 // Step 7 - submit the order (CREATE, part 2)
 router.post('/order', OrderController.create);
+// EDIT an order the patron already placed (part 1: form, part 2: save)
+router.get('/order/:id/edit', OrderController.editOrder);
+router.post('/order/:id', OrderController.update);
 // VIEW a single order confirmation
 router.get('/order/:id', OrderController.view);
 

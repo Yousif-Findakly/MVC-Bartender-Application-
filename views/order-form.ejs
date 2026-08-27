@@ -1,17 +1,28 @@
 <%- include('partials/header') %>
 
 <!--
-  VIEW - Order form (step 6 of the request flow).
-  Rendered by OrderController.newOrder, and re-rendered by OrderController.create
-  when OrderModel.validate returns errors. Submits an HTTP POST to /order.
+  VIEW - Order form, shared by CREATE (step 6) and EDIT.
+  Rendered by OrderController.newOrder / editOrder, and re-rendered by
+  create() / update() when OrderModel.validate returns errors.
+  `orderId` is null for a new order and set when editing an existing one.
 -->
+
+<% const isEdit = Boolean(orderId); %>
 
 <div class="page-head">
   <div>
-    <h1>Place an Order</h1>
-    <p class="sub">Your drink goes straight into the bartender&rsquo;s queue.</p>
+    <h1><%= isEdit ? 'Edit Order #' + orderId : 'Place an Order' %></h1>
+    <p class="sub">
+      <% if (isEdit) { %>
+        Change the ticket while it is still waiting in the queue.
+      <% } else { %>
+        Your drink goes straight into the bartender&rsquo;s queue.
+      <% } %>
+    </p>
   </div>
-  <a class="btn btn-ghost" href="/menu">&larr; Back to the menu</a>
+  <a class="btn btn-ghost" href="<%= isEdit ? '/order/' + orderId : '/menu' %>">
+    &larr; <%= isEdit ? 'Back to the order' : 'Back to the menu' %>
+  </a>
 </div>
 
 <% if (errors.length > 0) { %>
@@ -25,7 +36,7 @@
   </div>
 <% } %>
 
-<form class="card form" method="POST" action="/order">
+<form class="card form" method="POST" action="<%= isEdit ? '/order/' + orderId : '/order' %>">
 
   <label class="field">
     <span class="label">Cocktail</span>
@@ -67,7 +78,12 @@
   </label>
 
   <div class="form-actions">
-    <button class="btn btn-primary" type="submit">Send Order to the Bar</button>
+    <button class="btn btn-primary" type="submit">
+      <%= isEdit ? 'Save Changes' : 'Send Order to the Bar' %>
+    </button>
+    <% if (isEdit) { %>
+      <a class="btn btn-ghost" href="/order/<%= orderId %>">Cancel</a>
+    <% } %>
   </div>
 
 </form>

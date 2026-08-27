@@ -6,9 +6,10 @@
  * The assignment calls for "a controller to handle cocktail order-related
  * actions (create, edit, and view)". Those three actions map to:
  *
- *   CREATE -> newOrder()  (GET  /order/new)  + create()    (POST /order)
- *   VIEW   -> view()      (GET  /order/:id)  + viewQueue() (GET  /queue)
- *   EDIT   -> markReady() (POST /queue/:id/ready)
+ *   CREATE -> newOrder()  (GET  /order/new)      + create() (POST /order)
+ *   EDIT   -> editOrder() (GET  /order/:id/edit) + update() (POST /order/:id)
+ *             markReady() (POST /queue/:id/ready) - the bartender's edit
+ *   VIEW   -> view()      (GET  /order/:id)      + viewQueue() (GET /queue)
  *
  * Steps 6-10 of the request flow live in this file. Again: the controller
  * only routes work. Every database read/write happens inside the models.
@@ -37,6 +38,7 @@ const OrderController = {
       cocktails,
       formatPrice: CocktailModel.formatPrice,
       errors: [],
+      orderId: null,
       form: {
         cocktail_id: selected ? selected.cocktail_id : '',
         patron_name: '',
@@ -73,6 +75,7 @@ const OrderController = {
         cocktails: CocktailModel.getAvailableCocktails(),
         formatPrice: CocktailModel.formatPrice,
         errors,
+        orderId: null,
         form
       });
     }
@@ -83,6 +86,82 @@ const OrderController = {
     // Redirect to the confirmation view (POST-then-redirect keeps a browser
     // refresh from submitting the same order twice).
     return res.redirect(`/order/${orderId}`);
+  },
+
+  /* ------------------------------------------------------------------- EDIT */
+
+  /**
+   * GET /order/:id/edit
+   * The patron wants to change an order they already sent. Shows the same form
+   * as CREATE, pre-filled from the database, pointed at the update action.
+   */
+  editOrder(req, res, next) {
+    const order = OrderModel.getOrderById(req.params.id);
+
+    if (!order) {
+      return next(); // 404 handler in server.js
+    }
+
+    // Business rule lives in the MODEL: a poured drink can no longer be changed.
+    if (!OrderModel.isEditable(order)) {
+      return res.redirect(`/order/${order.order_id}`);
+    }
+
+    return res.render('order-form', {
+      title: `Edit Order #${order.order_id}`,
+      activeNav: 'menu',
+      cocktails: CocktailModel.getAvailableCocktails(),
+      formatPrice: CocktailModel.formatPrice,
+      errors: [],
+      orderId: order.order_id,
+      form: {
+        cocktail_id: order.cocktail_id,
+        patron_name: order.patron_name,
+        table_number: order.table_number,
+        quantity: order.quantity,
+        special_instructions: order.special_instructions || ''
+      }
+    });
+  },
+
+  /**
+   * POST /order/:id
+   * Applies the patron's changes. Mirrors create(): the MODEL validates, the
+   * MODEL writes, the controller only picks the response.
+   */
+  update(req, res, next) {
+    const order = OrderModel.getOrderById(req.params.id);
+
+    if (!order) {
+      return next();
+    }
+
+    const form = {
+      cocktail_id: req.body.cocktail_id,
+      patron_name: req.body.patron_name,
+      table_number: req.body.table_number,
+      quantity: req.body.quantity,
+      special_instructions: req.body.special_instructions
+    };
+
+    const errors = OrderModel.validate(form);
+
+    if (errors.length > 0) {
+      return res.status(400).render('order-form', {
+        title: `Edit Order #${order.order_id}`,
+        activeNav: 'menu',
+        cocktails: CocktailModel.getAvailableCocktails(),
+        formatPrice: CocktailModel.formatPrice,
+        errors,
+        orderId: order.order_id,
+        form
+      });
+    }
+
+    // Returns false if the bartender marked it ready while the form was open.
+    const changed = OrderModel.updateOrder(order.order_id, form);
+
+    return res.redirect(changed ? `/order/${order.order_id}?updated=1` : `/order/${order.order_id}`);
   },
 
   /* ------------------------------------------------------------------- VIEW */
@@ -103,7 +182,9 @@ const OrderController = {
       activeNav: 'menu',
       order,
       formatPrice: CocktailModel.formatPrice,
-      STATUS: OrderModel.STATUS
+      STATUS: OrderModel.STATUS,
+      canEdit: OrderModel.isEditable(order),
+      notice: req.query.updated ? 'Your changes were sent to the bar.' : null
     });
   },
 

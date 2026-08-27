@@ -85,6 +85,52 @@ const OrderModel = {
   },
 
   /**
+   * Business rule: an order may only be changed while it is still Queued.
+   * Once the bartender has poured it, the ticket is locked.
+   * @param {Object} order a row from getOrderById
+   * @returns {boolean}
+   */
+  isEditable(order) {
+    return Boolean(order) && order.status === STATUS.QUEUED;
+  },
+
+  /**
+   * Updates an existing cocktail order. Called by OrderController.update when
+   * the patron submits the edit form (HTTP POST). The status guard in the WHERE
+   * clause means a race with the bartender cannot rewrite a poured drink.
+   * @param {number|string} orderId
+   * @param {Object} input validated form fields
+   * @returns {boolean} true if the order changed
+   */
+  updateOrder(orderId, input) {
+    const id = Number(orderId);
+    if (!Number.isInteger(id) || id <= 0) return false;
+
+    const result = db
+      .prepare(
+        `UPDATE orders
+            SET cocktail_id          = @cocktail_id,
+                patron_name          = @patron_name,
+                table_number         = @table_number,
+                quantity             = @quantity,
+                special_instructions = @special_instructions
+          WHERE order_id = @order_id
+            AND status   = @queued`
+      )
+      .run({
+        order_id: id,
+        cocktail_id: Number(input.cocktail_id),
+        patron_name: String(input.patron_name).trim(),
+        table_number: String(input.table_number).trim(),
+        quantity: Number(input.quantity),
+        special_instructions: String(input.special_instructions || '').trim() || null,
+        queued: STATUS.QUEUED
+      });
+
+    return result.changes === 1;
+  },
+
+  /**
    * Returns one order joined with its cocktail, for the confirmation view.
    * @param {number|string} orderId
    * @returns {Object|undefined}
@@ -95,7 +141,7 @@ const OrderModel = {
 
     return db
       .prepare(
-        `SELECT o.order_id, o.patron_name, o.table_number, o.quantity,
+        `SELECT o.order_id, o.cocktail_id, o.patron_name, o.table_number, o.quantity,
                 o.special_instructions, o.status, o.placed_at, o.ready_at,
                 c.name AS cocktail_name, c.glass, c.price
            FROM orders o
