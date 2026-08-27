@@ -1,15 +1,16 @@
 
 :root {
-  --bg:        #12100f;
-  --surface:   #1c1917;
-  --surface-2: #262220;
-  --line:      #37312d;
-  --text:      #f5f0ea;
-  --muted:     #a29a91;
-  --accent:    #d9a441;
-  --accent-dk: #a87c26;
-  --ready:     #4ba36a;
-  --danger:    #d3705c;
+  --bg:        #faf7f2;   
+  --surface:   #ffffff;  
+  --surface-2: #f4efe7;   
+  --line:      #e6ddd0;
+  --text:      #1f1a16;   
+  --muted:     #776c60;
+  --accent:    #9a6b14;   
+  --accent-dk: #7d560d;
+  --accent-sf: #f6ecd8;   
+  --ready:     #2f7d4e;
+  --danger:    #b4462f;
   --radius:    12px;
 }
 
@@ -29,7 +30,7 @@ body {
 
 .site-header {
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, #1a1716, #141211);
+  background: linear-gradient(180deg, #ffffff, var(--bg));
   position: sticky; top: 0; z-index: 10;
 }
 .header-inner {
@@ -47,7 +48,7 @@ body {
   padding: 0.4rem 0.75rem; border-radius: 999px; border: 1px solid transparent;
 }
 .site-nav a:hover { color: var(--text); background: var(--surface-2); }
-.site-nav a.active { color: var(--accent); border-color: var(--accent-dk); background: rgba(217,164,65,0.08); }
+.site-nav a.active { color: var(--accent); border-color: var(--accent-dk); background: var(--accent-sf); }
 
 main { padding: 2rem 0 3.5rem; }
 
@@ -102,8 +103,8 @@ main { padding: 2rem 0 3.5rem; }
   padding: 0.6rem 1.05rem; font-size: 0.92rem; font-weight: 600;
   text-decoration: none; cursor: pointer; font-family: inherit;
 }
-.btn-primary { background: var(--accent); color: #241c0c; }
-.btn-primary:hover { background: #e8b455; }
+.btn-primary { background: var(--accent); color: #ffffff; }
+.btn-primary:hover { background: var(--accent-dk); }
 .btn-outline { background: transparent; border-color: var(--line); color: var(--text); }
 .btn-outline:hover { border-color: var(--accent-dk); color: var(--accent); }
 .btn-ghost { background: transparent; color: var(--muted); }
@@ -158,18 +159,18 @@ textarea { resize: vertical; }
 
 .alert { border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.3rem; font-size: 0.92rem; }
 .alert ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
-.alert-error { background: rgba(211,112,92,0.12); border: 1px solid var(--danger); color: #f3c3b8; }
-.alert-ok { background: rgba(75,163,106,0.12); border: 1px solid var(--ready); color: #bde5c9; }
+.alert-error { background: rgba(180,70,47,0.08); border: 1px solid var(--danger); color: #8c3323; }
+.alert-ok { background: rgba(47,125,78,0.08); border: 1px solid var(--ready); color: #23603b; }
 
 /* ----------------------------- confirmation ------------------------------ */
 
 .confirm { text-align: center; padding: 1.5rem 0 2rem; }
 .confirm-badge {
   width: 56px; height: 56px; margin: 0 auto 1rem; border-radius: 50%;
-  background: rgba(75,163,106,0.15); border: 1px solid var(--ready); color: var(--ready);
+  background: rgba(47,125,78,0.10); border: 1px solid var(--ready); color: var(--ready);
   display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
 }
-.error-badge { background: rgba(211,112,92,0.15); border-color: var(--danger); color: var(--danger); font-size: 1.1rem; font-weight: 700; }
+.error-badge { background: rgba(180,70,47,0.10); border-color: var(--danger); color: var(--danger); font-size: 1.1rem; font-weight: 700; }
 .confirm h1 { margin: 0 0 0.4rem; font-size: 1.6rem; }
 
 .ticket { max-width: 560px; margin: 0 auto; }
@@ -213,8 +214,8 @@ textarea { resize: vertical; }
   display: inline-block; font-size: 0.75rem; font-weight: 600;
   padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap;
 }
-.status-queued { background: rgba(217,164,65,0.14); color: var(--accent); border: 1px solid var(--accent-dk); }
-.status-ready  { background: rgba(75,163,106,0.14); color: var(--ready);  border: 1px solid var(--ready); }
+.status-queued { background: var(--accent-sf); color: var(--accent); border: 1px solid var(--accent-dk); }
+.status-ready  { background: rgba(47,125,78,0.10); color: var(--ready);  border: 1px solid var(--ready); }
 
 .empty { color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); padding: 2rem; text-align: center; }
 
